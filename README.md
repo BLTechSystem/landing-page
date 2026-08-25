@@ -2,17 +2,17 @@
 
 Uma solução web de alta conversão, moderna e 100% acessível, desenvolvida para clínicas, consultórios e profissionais da saúde que buscam automatizar agendamentos e transmitir autoridade.
 
-[![Demonstração Online](https://img.shields.io/badge/Acessar_Demonstração-Online-teal?style=for-the-badge&logo=googlechrome)](https://SEU-USUARIO.github.io/SEU-REPOSITORIO/)
+[![Demonstração Online](https://img.shields.io/badge/Acessar_Demonstração-Online-teal?style=for-the-badge&logo=googlechrome)](https://bltechsystem.github.io/landing-page/)
 
 ---
 
-## 🎯 Por que investir nesta solução ?
+## 🎯 Por que investir nesta solução para sua clínica?
 
-Estudos mostram que grande parte dos pacientes/clientes prefere agendar consultas fora do horário comercial. Esta landing page foi projetada para funcionar como um **atendente 24/7**, reduzindo gargalos no WhatsApp da recepção e aumentando a taxa de conversão de novos pacientes.
+Estudos mostram que grande parte dos pacientes prefere agendar consultas fora do horário comercial. Esta landing page foi projetada para funcionar como um **atendente 24/7**, reduzindo gargalos no WhatsApp da recepção e aumentando a taxa de conversão de novos pacientes.
 
 ### ✨ Principais Recursos para o Seu Negócio:
-- **Agendamento Inteligente em 3 Passos:** O paciente/cliente escolhe a especialidade, o horário e envia os dados pré-formatados diretamente para o seu WhatsApp.
-- **Checagem Rápida de Convênios:** Filtro instantâneo para o paciente/cliente confirmar se a clínica atende o plano dele.
+- **Agendamento Inteligente em 3 Passos:** O paciente escolhe a especialidade, o horário e envia os dados pré-formatados diretamente para o seu WhatsApp.
+- **Checagem Rápida de Convênios:** Filtro instantâneo para o paciente confirmar se a clínica atende o plano dele.
 - **Simulador de Reembolso:** Ferramenta interativa que estimativa o custo final para o paciente, incentivando consultas particulares.
 - **SEO Local Integrado (Google):** Código otimizado (Schema.org) para ajudar sua clínica a aparecer nos primeiros resultados do Google em sua região.
 - **Design 100% Responsivo:** Experiência perfeita em celulares, tablets e computadores.
