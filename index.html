@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clínica Saúde & Vida | Atendimento Médico Especializado em São Paulo</title>
+    <meta name="description" content="Clínica médica em São Paulo com atendimento humanizado. Consultas em Clínica Geral, Pediatria e Ginecologia. Agende sua consulta online.">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "MedicalBusiness",
+      "name": "Clínica Saúde & Vida",
+      "image": "https://images.unsplash.com/photo-1622253692010-333f2da6031d",
+      "telephone": "+5511999999999",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Av. Paulista, 1000 - Bela Vista",
+        "addressLocality": "São Paulo",
+        "addressRegion": "SP",
+        "postalCode": "01310-100",
+        "addressCountry": "BR"
+      },
+      "openingHours": "Mo-Fr 08:00-19:00, Sa 08:00-13:00"
+    }
+    </script>
+
+    <style>
+        .alto-contraste {
+            background-color: #000000 !important;
+            color: #ffffff !important;
+        }
+        .alto-contraste header, 
+        .alto-contraste section, 
+        .alto-contraste div, 
+        .alto-contraste footer {
+            background-color: #000000 !important;
+            color: #ffffff !important;
+            border-color: #ffffff !important;
+        }
+        .alto-contraste a, 
+        .alto-contraste button {
+            color: #ffff00 !important;
+        }
+
+        .modo-daltonismo .service-btn.border-teal-600 {
+            border-width: 4px !important;
+            outline: 3px solid #000 !important;
+        }
+
+        .horario-btn.ocupado {
+            background-color: #f1f5f9 !important;
+            color: #94a3b8 !important;
+            border-color: #e2e8f0 !important;
+            cursor: not-allowed !important;
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+
+    <!-- ACESSIBILIDADE FIXA -->
+    <div id="barra-acessibilidade" class="bg-slate-900 text-white text-xs py-2 px-4 border-b border-slate-800">
+        <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-2">
+            <span class="font-semibold flex items-center gap-1.5">
+                <i data-lucide="eye" class="w-4 h-4 text-teal-400"></i> Opções de Acessibilidade:
+            </span>
+            <div class="flex flex-wrap items-center gap-2">
+                <button id="btn-aumentar-fonte" class="bg-slate-800 hover:bg-slate-700 px-2.5 py-1 rounded font-bold transition">A+</button>
+                <button id="btn-diminuir-fonte" class="bg-slate-800 hover:bg-slate-700 px-2.5 py-1 rounded font-bold transition">A-</button>
+                <button id="btn-alto-contraste" class="bg-slate-800 hover:bg-slate-700 px-2.5 py-1 rounded font-semibold transition flex items-center gap-1">
+                    <i data-lucide="sun-moon" class="w-3.5 h-3.5"></i> Contraste
+                </button>
+                <button id="btn-daltonismo" class="bg-slate-800 hover:bg-slate-700 px-2.5 py-1 rounded font-semibold transition flex items-center gap-1">
+                    <i data-lucide="palette" class="w-3.5 h-3.5"></i> Modo Daltonismo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- WIDGET VLIBRAS -->
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
+
+    <!-- WHATSAPP FLUTUANTE -->
+    <a href="https://wa.me/5511999999999?text=Olá,%20gostaria%20de%20agendar%20uma%20consulta" 
+       target="_blank" 
+       rel="noopener noreferrer"
+       class="fixed bottom-6 right-6 bg-emerald-500 hover:bg-emerald-600 text-white p-4 rounded-full shadow-2xl transition-all hover:scale-110 z-50 flex items-center justify-center"
+       aria-label="Falar no WhatsApp">
+        <i data-lucide="message-circle" class="w-7 h-7"></i>
+    </a>
+
+    <!-- TOAST DE NOTIFICAÇÃO -->
+    <div id="toast-agendamento" class="fixed bottom-6 left-6 bg-white border border-slate-200 shadow-2xl rounded-2xl p-4 z-50 flex items-center gap-3 transition-all transform translate-y-20 opacity-0 max-w-sm">
+        <div class="bg-teal-100 text-teal-600 p-2.5 rounded-xl">
+            <i data-lucide="user-check" class="w-5 h-5"></i>
+        </div>
+        <div>
+            <p class="text-xs text-slate-500 font-medium">Novo agendamento realizado</p>
+            <p id="toast-text" class="text-sm font-semibold text-slate-800">Maria S. acabou de agendar Clínica Geral</p>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="sticky top-0 bg-white/90 backdrop-blur-md shadow-sm z-40 border-b border-slate-100">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-2 font-bold text-xl text-teal-700">
+                <i data-lucide="activity" class="w-6 h-6 text-teal-600"></i>
+                <span>Saúde&Vida</span>
+            </a>
+            
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
+                <a href="#sobre" class="hover:text-teal-600 transition-colors">Sobre Nós</a>
+                <a href="#especialistas" class="hover:text-teal-600 transition-colors">Especialistas</a>
+                <a href="#convenios" class="hover:text-teal-600 transition-colors">Convênios</a>
+                <a href="#agendamento" class="hover:text-teal-600 transition-colors">Agendamento</a>
+                <a href="#faq" class="hover:text-teal-600 transition-colors">FAQ</a>
+            </nav>
+
+            <a href="#agendamento" class="bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-all shadow-md hover:shadow-lg">
+                Agendar Consulta
+            </a>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="py-16 md:py-24 px-4 max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+        <div>
+            <span class="bg-teal-100 text-teal-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                Atendimento Especializado em SP
+            </span>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mt-4 leading-tight">
+                Cuidando da sua saúde com excelência e dedicação
+            </h1>
+            <p class="text-lg text-slate-600 mt-4">
+                Consultas médicas personalizadas, diagnósticos precisos e estrutura moderna para garantir o seu bem-estar e de sua família.
+            </p>
+            
+            <div class="mt-8 flex flex-col sm:flex-row gap-4">
+                <a href="#agendamento" class="bg-teal-600 hover:bg-teal-700 text-white font-semibold text-center px-6 py-3.5 rounded-lg transition-all shadow-lg text-base">
+                    Marcar Consulta Agora
+                </a>
+                <a href="https://wa.me/5511999999999" target="_blank" rel="noopener noreferrer" class="border border-slate-300 hover:border-teal-600 text-slate-700 hover:text-teal-700 font-semibold text-center px-6 py-3.5 rounded-lg transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="phone" class="w-4 h-4"></i>
+                    (11) 99999-9999
+                </a>
+            </div>
+
+            <div class="mt-10 grid grid-cols-2 gap-4 border-t border-slate-200 pt-6">
+                <div class="flex items-center gap-2 text-sm text-slate-600">
+                    <i data-lucide="check-circle" class="w-5 h-5 text-teal-600"></i>
+                    <span>Estacionamento no local</span>
+                </div>
+                <div class="flex items-center gap-2 text-sm text-slate-600">
+                    <i data-lucide="check-circle" class="w-5 h-5 text-teal-600"></i>
+                    <span>Principais convênios</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="relative">
+            <div class="bg-teal-600/10 rounded-3xl p-4">
+                <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=800" 
+                     alt="Médico sorrindo em consultório" 
+                     class="rounded-2xl shadow-xl w-full object-cover aspect-[4/3]">
+            </div>
+        </div>
+    </section>
+
+    <!-- VALIDADOR DE CONVÊNIOS -->
+    <section id="convenios" class="py-12 bg-teal-900 text-white">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-2xl font-bold mb-2">Aceitamos o seu Convênio?</h2>
+            <p class="text-teal-200 text-sm mb-6">Digite o nome do seu plano abaixo para verificar instantaneamente.</p>
+            
+            <div class="relative max-w-md mx-auto">
+                <label for="convenio-input" class="sr-only">Nome do plano de saúde</label>
+                <input type="text" id="convenio-input" maxlength="30" placeholder="Ex: Bradesco, SulAmérica, Unimed..." class="w-full pl-11 pr-4 py-3 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-400 font-medium">
+                <i data-lucide="search" class="w-5 h-5 text-slate-400 absolute left-4 top-3.5"></i>
+            </div>
+            <div id="convenio-result" class="mt-4 text-sm font-semibold min-h-[24px]"></div>
+        </div>
+    </section>
+
+    <!-- SOBRE NÓS -->
+    <section id="sobre" class="py-16 bg-white border-b border-slate-200/60 scroll-mt-20">
+        <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6">
+                <span class="text-teal-600 font-bold text-sm uppercase tracking-wider">Conheça a Clínica</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900">Mais de 15 anos oferecendo medicina humanizada</h2>
+                <p class="text-slate-600 leading-relaxed">
+                    Fundada com o compromisso de resgatar o atendimento médico próximo e atencioso, a **Clínica Saúde & Vida** combina tecnologia de ponta com um ambiente acolhedor no coração de São Paulo.
+                </p>
+
+                <div class="grid grid-cols-3 gap-6 pt-4 border-t border-slate-100">
+                    <div>
+                        <p class="text-3xl font-extrabold text-teal-600">+15k</p>
+                        <p class="text-xs text-slate-500 font-medium mt-1">Pacientes Atendidos</p>
+                    </div>
+                    <div>
+                        <p class="text-3xl font-extrabold text-teal-600">18</p>
+                        <p class="text-xs text-slate-500 font-medium mt-1">Especialistas</p>
+                    </div>
+                    <div>
+                        <p class="text-3xl font-extrabold text-teal-600">4.9★</p>
+                        <p class="text-xs text-slate-500 font-medium mt-1">Nota no Google</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=600" alt="Recepção da clínica" class="rounded-2xl shadow-md w-full h-64 object-cover">
+                <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&q=80&w=600" alt="Consultório moderno" class="rounded-2xl shadow-md w-full h-64 object-cover mt-8">
+            </div>
+        </div>
+    </section>
+
+    <!-- ESPECIALISTAS -->
+    <section id="especialistas" class="py-16 max-w-6xl mx-auto px-4 scroll-mt-20">
+        <div class="text-center mb-12">
+            <span class="text-teal-600 font-bold text-sm uppercase tracking-wider">Corpo Médico</span>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-2">Nossos Especialistas</h2>
+            <p class="text-slate-600 mt-2">Médicos certificados e dedicados ao seu cuidado integral.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition">
+                <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=600" alt="Dra. Mariana Costa" class="w-full h-56 object-cover">
+                <div class="p-6">
+                    <span class="bg-teal-50 text-teal-700 text-xs font-bold px-2.5 py-1 rounded-md">Clínica Geral</span>
+                    <h3 class="text-lg font-bold text-slate-900 mt-3">Dra. Mariana Costa</h3>
+                    <p class="text-xs text-slate-500 font-medium mt-1">CRM/SP 145.890 | RQE 78901</p>
+                    <p class="text-slate-600 text-sm mt-3 leading-relaxed">Especialista em medicina preventiva e diagnóstico precoce, com foco em saúde integral.</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition">
+                <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=600" alt="Dr. Lucas Andrade" class="w-full h-56 object-cover">
+                <div class="p-6">
+                    <span class="bg-teal-50 text-teal-700 text-xs font-bold px-2.5 py-1 rounded-md">Pediatria</span>
+                    <h3 class="text-lg font-bold text-slate-900 mt-3">Dr. Lucas Andrade</h3>
+                    <p class="text-xs text-slate-500 font-medium mt-1">CRM/SP 132.410 | RQE 65432</p>
+                    <p class="text-slate-600 text-sm mt-3 leading-relaxed">Dedicação ao acompanhamento do desenvolvimento infantil e suporte aos pais.</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition">
+                <img src="https://images.unsplash.com/photo-1594824813566-7885a3977336?auto=format&fit=crop&q=80&w=600" alt="Dra. Camila Rocha" class="w-full h-56 object-cover">
+                <div class="p-6">
+                    <span class="bg-teal-50 text-teal-700 text-xs font-bold px-2.5 py-1 rounded-md">Ginecologia</span>
+                    <h3 class="text-lg font-bold text-slate-900 mt-3">Dra. Camila Rocha</h3>
+                    <p class="text-xs text-slate-500 font-medium mt-1">CRM/SP 158.902 | RQE 89012</p>
+                    <p class="text-slate-600 text-sm mt-3 leading-relaxed">Atendimento acolhedor focado em exames preventivos e saúde reprodutiva.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TABELA COMPARATIVA -->
+    <section class="py-16 bg-slate-100 border-y border-slate-200/60">
+        <div class="max-w-5xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <span class="text-teal-600 font-bold text-sm uppercase tracking-wider">Por que nos escolher?</span>
+                <h2 class="text-3xl font-extrabold text-slate-900 mt-2">Diferenciais do Nosso Atendimento</h2>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full bg-white rounded-2xl shadow-sm overflow-hidden text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-200 bg-slate-50">
+                            <th class="p-4 md:p-5 text-slate-700 font-bold text-sm">Recurso / Serviço</th>
+                            <th class="p-4 md:p-5 text-teal-700 font-bold text-sm bg-teal-50 text-center">Clínica Saúde & Vida</th>
+                            <th class="p-4 md:p-5 text-slate-500 font-bold text-sm text-center">Clínicas Tradicionais</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-sm">
+                        <tr>
+                            <td class="p-4 md:p-5 font-semibold text-slate-800">Tempo Médio de Espera</td>
+                            <td class="p-4 md:p-5 text-center bg-teal-50/50 font-bold text-teal-700">Até 15 minutos</td>
+                            <td class="p-4 md:p-5 text-center text-slate-500">45 a 90 minutos</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 md:p-5 font-semibold text-slate-800">Agendamento 100% Online</td>
+                            <td class="p-4 md:p-5 text-center bg-teal-50/50"><i data-lucide="check" class="w-5 h-5 text-teal-600 mx-auto" aria-label="Sim"></i></td>
+                            <td class="p-4 md:p-5 text-center"><i data-lucide="x" class="w-5 h-5 text-slate-300 mx-auto" aria-label="Não"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 md:p-5 font-semibold text-slate-800">Consulta Sem Apressamento (30min+)</td>
+                            <td class="p-4 md:p-5 text-center bg-teal-50/50"><i data-lucide="check" class="w-5 h-5 text-teal-600 mx-auto" aria-label="Sim"></i></td>
+                            <td class="p-4 md:p-5 text-center"><i data-lucide="x" class="w-5 h-5 text-slate-300 mx-auto" aria-label="Não"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 md:p-5 font-semibold text-slate-800">Suporte a Reembolso de Convênio</td>
+                            <td class="p-4 md:p-5 text-center bg-teal-50/50"><i data-lucide="check" class="w-5 h-5 text-teal-600 mx-auto" aria-label="Sim"></i></td>
+                            <td class="p-4 md:p-5 text-center"><i data-lucide="x" class="w-5 h-5 text-slate-300 mx-auto" aria-label="Não"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- SIMULADOR DE REEMBOLSO -->
+    <section class="py-16 max-w-4xl mx-auto px-4">
+        <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-lg text-center space-y-6">
+            <span class="bg-teal-100 text-teal-800 text-xs font-bold px-3 py-1 rounded-full uppercase">Economize na consulta</span>
+            <h2 class="text-3xl font-extrabold text-slate-900">Simulador de Reembolso de Convênio</h2>
+            <p class="text-slate-600 text-sm max-w-xl mx-auto">Muitos planos de saúde cobrem de 50% a 100% do valor de consultas particulares via reembolso. Faça uma estimativa rápida abaixo:</p>
+
+            <div class="max-w-md mx-auto space-y-4 pt-2">
+                <div>
+                    <label for="valor-consulta" class="block text-left text-xs font-bold text-slate-700 mb-1">Valor da Consulta Particular (R$)</label>
+                    <input type="number" id="valor-consulta" value="250" min="0" max="5000" class="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-400 outline-none text-slate-800 font-semibold">
+                </div>
+                <div>
+                    <label for="porcentagem-reembolso" class="block text-left text-xs font-bold text-slate-700 mb-1">Porcentagem Estimada de Cobertura do Seu Plano (%)</label>
+                    <input type="range" id="porcentagem-reembolso" min="20" max="100" value="80" class="w-full accent-teal-600">
+                    <span id="porcentagem-valor" class="text-sm font-bold text-teal-700">80%</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 pt-2">
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <p class="text-xs text-slate-500 font-medium">Reembolso Estimado:</p>
+                        <p id="valor-reembolsado" class="text-xl font-bold text-slate-700 mt-1">R$ 200,00</p>
+                    </div>
+                    <div class="bg-teal-50 p-4 rounded-xl border border-teal-200">
+                        <p class="text-xs text-slate-600 font-medium">Custo Final Estimado:</p>
+                        <p id="resultado-reembolso" class="text-xl font-extrabold text-teal-700 mt-1">R$ 50,00</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AGENDAMENTO DINÂMICO -->
+    <section id="agendamento" class="py-16 md:py-24 px-4 max-w-6xl mx-auto bg-white rounded-3xl shadow-lg my-8 scroll-mt-20 border border-slate-100">
+        <div class="text-center mb-12">
+            <span class="text-teal-600 font-bold text-sm uppercase tracking-wider">Agendamento Online</span>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-2">Escolha o horário da sua consulta</h2>
+            <p class="text-lg text-slate-600 mt-4 max-w-2xl mx-auto">Selecione a especialidade desejada, confira os horários livres e garanta seu horário em instantes.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-[1fr,2fr] gap-12">
+            <div class="space-y-8">
+                <!-- Passo 1 -->
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200/60">
+                    <h3 class="text-xl font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                        <span class="bg-teal-600 text-white w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                        Escolha o Serviço
+                    </h3>
+                    <div class="space-y-3">
+                        <button class="service-btn w-full text-left bg-white p-4 rounded-xl shadow-sm border border-slate-200 hover:border-teal-400 hover:bg-teal-50 transition flex items-center justify-between" data-service="clinica-geral">
+                            <div>
+                                <h4 class="font-semibold text-slate-800">Clínica Geral</h4>
+                                <p class="text-sm text-slate-600">Consultas de rotina e check-ups completos.</p>
+                            </div>
+                            <span class="status-ic text-xs px-2 py-1 bg-slate-100 text-slate-500 rounded font-bold">Selecionar</span>
+                        </button>
+                        <button class="service-btn w-full text-left bg-white p-4 rounded-xl shadow-sm border border-slate-200 hover:border-teal-400 hover:bg-teal-50 transition flex items-center justify-between" data-service="pediatria">
+                            <div>
+                                <h4 class="font-semibold text-slate-800">Pediatria</h4>
+                                <p class="text-sm text-slate-600">Acompanhamento e cuidado infantil.</p>
+                            </div>
+                            <span class="status-ic text-xs px-2 py-1 bg-slate-100 text-slate-500 rounded font-bold">Selecionar</span>
+                        </button>
+                        <button class="service-btn w-full text-left bg-white p-4 rounded-xl shadow-sm border border-slate-200 hover:border-teal-400 hover:bg-teal-50 transition flex items-center justify-between" data-service="ginecologia">
+                            <div>
+                                <h4 class="font-semibold text-slate-800">Ginecologia</h4>
+                                <p class="text-sm text-slate-600">Consultas preventivas e exames de rotina.</p>
+                            </div>
+                            <span class="status-ic text-xs px-2 py-1 bg-slate-100 text-slate-500 rounded font-bold">Selecionar</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Passo 2 -->
+                <div id="horario-section" class="bg-slate-50 p-6 rounded-2xl border border-slate-200/60 hidden transition-all">
+                    <h3 class="text-xl font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                        <span class="bg-teal-600 text-white w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                        Escolha o Dia e Horário
+                    </h3>
+                    <p id="horario-instruction" class="text-slate-600 mb-4 text-sm"></p>
+                    <div id="calendario" class="hidden grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
+                </div>
+
+                <!-- Passo 3 -->
+                <div id="contato-section" class="bg-slate-50 p-6 rounded-2xl border border-slate-200/60 hidden transition-all">
+                    <h3 class="text-xl font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                        <span class="bg-teal-600 text-white w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                        Seus Dados para Agendamento
+                    </h3>
+                    
+                    <form id="agendamento-form" class="space-y-4" novalidate>
+                        <div style="display:none;" aria-hidden="true">
+                            <input type="text" name="website_verification_field" id="website_verification_field" tabindex="-1" autocomplete="off">
+                        </div>
+
+                        <div>
+                            <label for="nome-input" class="block text-xs font-bold text-slate-700 mb-1">Nome Completo</label>
+                            <input type="text" id="nome-input" name="nome" placeholder="Seu Nome Completo" required maxlength="60" class="w-full p-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition outline-none text-sm bg-white">
+                            <p id="nome-error" class="text-xs text-rose-500 mt-1 hidden">Por favor, insira um nome válido (mínimo 3 caracteres).</p>
+                        </div>
+
+                        <div>
+                            <label for="email-input" class="block text-xs font-bold text-slate-700 mb-1">E-mail</label>
+                            <input type="email" id="email-input" name="email" placeholder="Seu E-mail" maxlength="80" class="w-full p-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition outline-none text-sm bg-white">
+                            <p id="email-error" class="text-xs text-rose-500 mt-1 hidden">Por favor, insira um e-mail válido.</p>
+                        </div>
+
+                        <div>
+                            <label for="whatsapp-input" class="block text-xs font-bold text-slate-700 mb-1">WhatsApp</label>
+                            <input type="tel" id="whatsapp-input" name="whatsapp" placeholder="(11) 99999-9999" required maxlength="15" class="w-full p-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition outline-none text-sm bg-white">
+                            <p id="whatsapp-error" class="text-xs text-rose-500 mt-1 hidden">Insira um número de WhatsApp válido com DDD.</p>
+                        </div>
+
+                        <div>
+                            <label for="observacoes" class="block text-xs font-bold text-slate-700 mb-1">Observações (Opcional)</label>
+                            <textarea id="observacoes" name="observacoes" placeholder="Alguma observação?" maxlength="300" class="w-full p-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition outline-none text-sm bg-white h-24"></textarea>
+                        </div>
+
+                        <div id="resumo-agendamento" class="bg-teal-50 p-4 rounded-xl border border-teal-200 text-sm">
+                            <p class="font-semibold text-teal-900 mb-1">Resumo da Seleção:</p>
+                            <p class="text-slate-700"><span class="font-medium">Serviço:</span> <span id="resumo-servico" class="text-teal-700 capitalize"></span></p>
+                            <p class="text-slate-700"><span class="font-medium">Horário:</span> <span id="resumo-horario" class="text-teal-700"></span></p>
+                        </div>
+
+                        <div class="flex items-start gap-2 text-xs text-slate-500 pt-2">
+                            <input type="checkbox" id="lgpd-check" required class="mt-0.5 rounded border-slate-300 text-teal-600 focus:ring-teal-500">
+                            <label for="lgpd-check">Concordo com o tratamento dos meus dados pessoais para fins de agendamento de consultas, em conformidade com a LGPD (Lei nº 13.709/2018).</label>
+                        </div>
+                        <p id="lgpd-error" class="text-xs text-rose-500 mt-0.5 hidden">Você precisa aceitar os termos para prosseguir.</p>
+
+                        <button id="btn-submit" type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6 py-3.5 rounded-xl transition-all shadow-lg text-base flex items-center justify-center gap-2">
+                            <i data-lucide="check-circle" class="w-5 h-5"></i>
+                            <span id="btn-submit-text">Finalizar Agendamento</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Card Lateral -->
+            <div class="hidden md:flex flex-col gap-6 justify-between p-8 bg-teal-900 text-white rounded-2xl relative overflow-hidden">
+                <div class="space-y-4 relative z-10">
+                    <span class="bg-teal-800 text-teal-200 text-xs font-bold px-3 py-1 rounded-full uppercase">Atendimento humanizado</span>
+                    <h3 class="text-2xl font-bold">Pronto para cuidar da sua saúde?</h3>
+                    <p class="text-teal-100 text-sm leading-relaxed">Em caso de dúvidas sobre prazos ou convênios atendidos, nossa recepção está disponível via WhatsApp.</p>
+                </div>
+
+                <div class="space-y-3 relative z-10 text-sm border-t border-teal-800 pt-6">
+                    <p class="flex items-center gap-3"><i data-lucide="clock" class="w-5 h-5 text-teal-400"></i> Seg a Sex: 08h às 19h</p>
+                    <p class="flex items-center gap-3"><i data-lucide="calendar" class="w-5 h-5 text-teal-400"></i> Sábados: 08h às 13h</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="py-16 bg-slate-100 border-y border-slate-200/60 scroll-mt-20">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <span class="text-teal-600 font-bold text-sm uppercase tracking-wider">Dúvidas Frequentes</span>
+                <h2 class="text-3xl font-extrabold text-slate-900 mt-2">Perguntas Frequentes</h2>
+            </div>
+
+            <div class="space-y-4">
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                    <button class="faq-toggle w-full p-5 text-left font-bold text-slate-800 flex justify-between items-center hover:bg-slate-50 transition">
+                        <span>Como funciona o reembolso de convênio?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden p-5 pt-0 text-sm text-slate-600 border-t border-slate-100 leading-relaxed">
+                        Emitimos a nota fiscal e o relatório médico detalhado no mesmo dia da consulta. Com esses documentos, você solicita o reembolso diretamente no aplicativo do seu plano de saúde.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                    <button class="faq-toggle w-full p-5 text-left font-bold text-slate-800 flex justify-between items-center hover:bg-slate-50 transition">
+                        <span>Quais são as formas de pagamento aceitas?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden p-5 pt-0 text-sm text-slate-600 border-t border-slate-100 leading-relaxed">
+                        Aceitamos Pix, cartões de crédito e débito (em até 3x sem juros para procedimentos) e pagamento via convênios credenciados.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                    <button class="faq-toggle w-full p-5 text-left font-bold text-slate-800 flex justify-between items-center hover:bg-slate-50 transition">
+                        <span>A clínica possui estacionamento?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden p-5 pt-0 text-sm text-slate-600 border-t border-slate-100 leading-relaxed">
+                        Sim, contamos com serviço de valet com manobrista no próprio prédio da clínica para maior comodidade dos nossos pacientes.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTATO E LOCALIZAÇÃO -->
+    <section id="contato" class="py-16 bg-white border-t border-slate-200 scroll-mt-20">
+        <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-12">
+            <div class="space-y-8">
+                <div>
+                    <span class="text-teal-600 font-bold text-sm uppercase tracking-wider">Fale Conosco</span>
+                    <h2 class="text-3xl font-extrabold text-slate-900 mt-2">Nossa Localização e Contato</h2>
+                    <p class="text-slate-600 mt-2">Estamos localizados em uma região de fácil acesso na capital.</p>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-teal-100 text-teal-600 p-3 rounded-xl">
+                            <i data-lucide="map-pin" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-900">Endereço</h4>
+                            <p class="text-slate-600 text-sm mt-1">Av. Paulista, 1000 - Bela Vista</p>
+                            <p class="text-slate-500 text-xs">São Paulo - SP, 01310-100</p>
+                            
+                            <div class="flex gap-3 mt-3">
+                                <a href="https://waze.com/ul?q=Av.+Paulista,+1000+Sao+Paulo" target="_blank" rel="noopener noreferrer" class="bg-sky-500 hover:bg-sky-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition">
+                                    <i data-lucide="navigation" class="w-3.5 h-3.5"></i> Waze
+                                </a>
+                                <a href="https://maps.google.com/?q=Av.+Paulista,+1000+Sao+Paulo" target="_blank" rel="noopener noreferrer" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition">
+                                    <i data-lucide="map" class="w-3.5 h-3.5"></i> Google Maps
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div class="bg-teal-100 text-teal-600 p-3 rounded-xl">
+                            <i data-lucide="phone" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-900">Telefones</h4>
+                            <p class="text-slate-600 text-sm mt-1">(11) 99999-9999 (WhatsApp)</p>
+                            <p class="text-slate-500 text-xs">(11) 3333-4444 (Fixo)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rounded-2xl overflow-hidden border border-slate-200 shadow-sm h-80 md:h-auto min-h-[300px]">
+                <iframe 
+                    title="Mapa de Localização da Clínica Saúde & Vida"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3657.1066961506!2d-46.6539054850222!3d-23.56461628468092!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce59c8da0aa315%3A0xd59f9431f228d0e0!2sAv.%20Paulista%2C%201000%20-%20Bela%20Vista%2C%20S%C3%A3o%20Paulo%20-%20SP%2C%2001310-100!5e0!3m2!1spt-BR!2sbr!4v1680000000000!5m2!1spt-BR!2sbr" 
+                    width="100%" 
+                    height="100%" 
+                    style="border:0;" 
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    sandbox="allow-scripts allow-same-origin allow-popups"
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 py-12 px-4 border-t border-slate-800">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 text-sm">
+            <div class="flex items-center gap-2 font-bold text-xl text-white">
+                <i data-lucide="activity" class="w-6 h-6 text-teal-500"></i>
+                <span>Saúde&Vida</span>
+            </div>
+            <p class="text-center">© 2026 Clínica Saúde & Vida. Todos os direitos reservados.</p>
+            <div class="text-xs text-slate-500 text-center md:text-right space-y-1">
+                <p>CRM/SP 123456 | Direção Técnica Dr. Exemplo</p>
+                <p><a href="#" class="hover:underline text-slate-400">Política de Privacidade (LGPD)</a> | <a href="#" class="hover:underline text-slate-400">Termos de Uso</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT AVANÇADO -->
+    <script>
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+
+        // PERSISTÊNCIA E LOGICA DE ACESSIBILIDADE
+        let tamanhoFonteAtual = 100;
+
+        document.getElementById('btn-aumentar-fonte').addEventListener('click', () => {
+            if (tamanhoFonteAtual < 140) {
+                tamanhoFonteAtual += 10;
+                document.documentElement.style.fontSize = `${tamanhoFonteAtual}%`;
+            }
+        });
+
+        document.getElementById('btn-diminuir-fonte').addEventListener('click', () => {
+            if (tamanhoFonteAtual > 80) {
+                tamanhoFonteAtual -= 10;
+                document.documentElement.style.fontSize = `${tamanhoFonteAtual}%`;
+            }
+        });
+
+        const btnAltoContraste = document.getElementById('btn-alto-contraste');
+        btnAltoContraste.addEventListener('click', () => {
+            document.body.classList.toggle('alto-contraste');
+            const ativo = document.body.classList.contains('alto-contraste');
+            localStorage.setItem('pref_alto_contraste', ativo ? 'true' : 'false');
+        });
+
+        const btnDaltonismo = document.getElementById('btn-daltonismo');
+        btnDaltonismo.addEventListener('click', () => {
+            document.body.classList.toggle('modo-daltonismo');
+            const ativo = document.body.classList.contains('modo-daltonismo');
+            localStorage.setItem('pref_daltonismo', ativo ? 'true' : 'false');
+            atualizarTagsDaltonismo();
+        });
+
+        function atualizarTagsDaltonismo() {
+            document.querySelectorAll('.service-btn').forEach(btn => {
+                const statusTag = btn.querySelector('.status-ic');
+                if (btn.classList.contains('border-teal-600')) {
+                    statusTag.textContent = '✓ SELECIONADO';
+                    if (document.body.classList.contains('modo-daltonismo')) {
+                        statusTag.classList.add('bg-black', 'text-white');
+                    }
+                } else {
+                    statusTag.textContent = 'Selecionar';
+                    statusTag.classList.remove('bg-black', 'text-white');
+                }
+            });
+        }
+
+        // Restaurar preferências salvas
+        if (localStorage.getItem('pref_alto_contraste') === 'true') {
+            document.body.classList.add('alto-contraste');
+        }
+        if (localStorage.getItem('pref_daltonismo') === 'true') {
+            document.body.classList.add('modo-daltonismo');
+        }
+
+        // MÁSCARA DE TELEFONE
+        const whatsappInput = document.getElementById('whatsapp-input');
+        whatsappInput.addEventListener('input', (e) => {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
+
+        // SISTEMA DE AGENDAMENTO
+        const serviceBtns = document.querySelectorAll('.service-btn');
+        const horarioSection = document.getElementById('horario-section');
+        const horarioInstruction = document.getElementById('horario-instruction');
+        const calendario = document.getElementById('calendario');
+        const contatoSection = document.getElementById('contato-section');
+        const agendamentoForm = document.getElementById('agendamento-form');
+        const resumoServico = document.getElementById('resumo-servico');
+        const resumoHorario = document.getElementById('resumo-horario');
+
+        let selectedService = null;
+        let selectedHorario = null;
+
+        const defaultHorarios = {
+            'clinica-geral': ['Amanhã - 10:00', 'Amanhã - 14:00', 'Quinta - 11:00'],
+            'pediatria': ['Amanhã - 09:30', 'Quinta - 10:30', 'Sexta - 14:30'],
+            'ginecologia': ['Quinta - 15:00', 'Sexta - 10:00', 'Sexta - 16:00'],
+        };
+
+        function getSlotsOcupados() {
+            return JSON.parse(localStorage.getItem('agendamentos_ocupados') || '[]');
+        }
+
+        function marcarSlotOcupado(servico, horario) {
+            const ocupados = getSlotsOcupados();
+            ocupados.push(`${servico}_${horario}`);
+            localStorage.setItem('agendamentos_ocupados', JSON.stringify(ocupados));
+        }
+
+        serviceBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                selectedService = btn.dataset.service;
+                updateServiceSelection(btn);
+                showHorarios(selectedService);
+                hideContato();
+            });
+        });
+
+        function updateServiceSelection(clickedBtn) {
+            serviceBtns.forEach(btn => {
+                btn.classList.remove('border-teal-600', 'bg-teal-50', 'ring-2', 'ring-teal-500');
+                const tag = btn.querySelector('.status-ic');
+                if (tag) tag.textContent = 'Selecionar';
+            });
+            clickedBtn.classList.add('border-teal-600', 'bg-teal-50', 'ring-2', 'ring-teal-500');
+            const selectedTag = clickedBtn.querySelector('.status-ic');
+            if (selectedTag) selectedTag.textContent = '✓ Selecionado';
+            atualizarTagsDaltonismo();
+        }
+
+        function showHorarios(service) {
+            horarioSection.classList.remove('hidden');
+            const nomeFormatado = service.replace('-', ' ');
+            horarioInstruction.textContent = `Horários para ${nomeFormatado}:`;
+            calendario.innerHTML = '';
+            calendario.classList.remove('hidden');
+
+            const horarios = defaultHorarios[service];
+            const ocupados = getSlotsOcupados();
+
+            if (horarios && horarios.length > 0) {
+                horarios.forEach(horario => {
+                    const horarioBtn = document.createElement('button');
+                    horarioBtn.type = 'button';
+                    const isOcupado = ocupados.includes(`${service}_${horario}`);
+
+                    if (isOcupado) {
+                        horarioBtn.classList.add('horario-btn', 'ocupado', 'bg-slate-100', 'p-3', 'rounded-xl', 'border', 'border-slate-200', 'text-sm', 'font-medium');
+                        horarioBtn.textContent = `${horario} (Esgotado)`;
+                        horarioBtn.disabled = true;
+                    } else {
+                        horarioBtn.classList.add('horario-btn', 'bg-white', 'p-3', 'rounded-xl', 'shadow-sm', 'border', 'border-slate-200', 'hover:border-teal-400', 'hover:bg-teal-50', 'transition', 'text-sm', 'font-medium', 'text-slate-700');
+                        horarioBtn.textContent = horario;
+                        horarioBtn.addEventListener('click', () => {
+                            selectedHorario = horario;
+                            updateHorarioSelection(horarioBtn);
+                            showContato();
+                        });
+                    }
+                    calendario.appendChild(horarioBtn);
+                });
+            }
+        }
+
+        function updateHorarioSelection(clickedBtn) {
+            const horarioBtns = document.querySelectorAll('.horario-btn:not(.ocupado)');
+            horarioBtns.forEach(btn => {
+                btn.classList.remove('border-teal-600', 'bg-teal-600', 'text-white');
+                btn.classList.add('bg-white', 'text-slate-700');
+            });
+            clickedBtn.classList.remove('bg-white', 'text-slate-700');
+            clickedBtn.classList.add('border-teal-600', 'bg-teal-600', 'text-white');
+        }
+
+        function showContato() {
+            contatoSection.classList.remove('hidden');
+            resumoServico.textContent = selectedService.replace('-', ' ');
+            resumoHorario.textContent = selectedHorario;
+        }
+
+        function hideContato() {
+            contatoSection.classList.add('hidden');
+            selectedHorario = null;
+        }
+
+        // SUBMIT FORMULARIO
+        let lastSubmitTime = 0;
+
+        agendamentoForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            if (document.getElementById('website_verification_field').value !== '') return;
+
+            const now = Date.now();
+            if (now - lastSubmitTime < 10000) {
+                alert('Aguarde alguns segundos antes de realizar um novo envio.');
+                return;
+            }
+
+            const nomeInput = document.getElementById('nome-input');
+            const emailInput = document.getElementById('email-input');
+            const lgpdCheck = document.getElementById('lgpd-check');
+            let isValid = true;
+
+            if (nomeInput.value.trim().length < 3) {
+                document.getElementById('nome-error').classList.remove('hidden');
+                isValid = false;
+            } else {
+                document.getElementById('nome-error').classList.add('hidden');
+            }
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (emailInput.value && !emailRegex.test(emailInput.value.trim())) {
+                document.getElementById('email-error').classList.remove('hidden');
+                isValid = false;
+            } else {
+                document.getElementById('email-error').classList.add('hidden');
+            }
+
+            if (whatsappInput.value.replace(/\D/g, '').length < 10) {
+                document.getElementById('whatsapp-error').classList.remove('hidden');
+                isValid = false;
+            } else {
+                document.getElementById('whatsapp-error').classList.add('hidden');
+            }
+
+            if (!lgpdCheck.checked) {
+                document.getElementById('lgpd-error').classList.remove('hidden');
+                isValid = false;
+            } else {
+                document.getElementById('lgpd-error').classList.add('hidden');
+            }
+
+            if (!isValid) return;
+
+            const btnSubmit = document.getElementById('btn-submit');
+            const btnSubmitText = document.getElementById('btn-submit-text');
+            btnSubmit.disabled = true;
+            btnSubmitText.textContent = "Processando Agendamento...";
+
+            setTimeout(() => {
+                lastSubmitTime = Date.now();
+                marcarSlotOcupado(selectedService, selectedHorario);
+
+                const formData = new FormData(agendamentoForm);
+                const data = Object.fromEntries(formData.entries());
+                
+                const safeNome = data.nome.replace(/[^\w\sÀ-ÿ]/gi, '');
+                const safeObs = data.observacoes ? data.observacoes.replace(/[^\w\sÀ-ÿ.,?!]/gi, '') : '';
+
+                const phone = '5511999999999';
+                let message = `*Novo Agendamento Confirmado*\n\n`;
+                message += `*Paciente:* ${safeNome}\n`;
+                message += `*E-mail:* ${data.email || 'Não informado'}\n`;
+                message += `*Contato:* ${data.whatsapp}\n`;
+                message += `*Especialidade:* ${selectedService.replace('-', ' ')}\n`;
+                message += `*Horário:* ${selectedHorario}\n`;
+                if (safeObs) {
+                    message += `*Observações:* ${safeObs}\n`;
+                }
+
+                btnSubmit.disabled = false;
+                btnSubmitText.textContent = "Finalizar Agendamento";
+
+                showHorarios(selectedService);
+                hideContato();
+                window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
+            }, 800);
+        });
+
+        // VALIDADOR DE CONVÊNIOS
+        const conveniosAceitos = ['bradesco', 'sulamerica', 'unimed', 'amil', 'notredame', 'porto seguro', 'omint', 'careplus'];
+        const convenioInput = document.getElementById('convenio-input');
+        const convenioResult = document.getElementById('convenio-result');
+
+        convenioInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            convenioResult.innerHTML = '';
+            
+            if (!query) return;
+
+            const aceito = conveniosAceitos.some(c => c.includes(query));
+            
+            if (aceito) {
+                const wrapper = document.createElement('span');
+                wrapper.className = 'text-emerald-400 font-bold flex items-center justify-center gap-1';
+                const icon = document.createElement('i');
+                icon.setAttribute('data-lucide', 'check-circle');
+                icon.className = 'w-4 h-4';
+                const text = document.createTextNode(` Sim! Aceitamos o plano "${query.toUpperCase()}".`);
+                wrapper.appendChild(icon);
+                wrapper.appendChild(text);
+                convenioResult.appendChild(wrapper);
+            } else {
+                const wrapper = document.createElement('span');
+                wrapper.className = 'text-amber-300 font-medium';
+                const textBefore = document.createTextNode('Plano não credenciado direto, mas oferecemos nota fiscal para ');
+                const strong = document.createElement('strong');
+                strong.textContent = 'Reembolso';
+                const textAfter = document.createTextNode('!');
+                wrapper.appendChild(textBefore);
+                wrapper.appendChild(strong);
+                wrapper.appendChild(textAfter);
+                convenioResult.appendChild(wrapper);
+            }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        });
+
+        // SIMULADOR DE REEMBOLSO OTIMIZADO
+        const valorInput = document.getElementById('valor-consulta');
+        const pctInput = document.getElementById('porcentagem-reembolso');
+        const pctValorDisplay = document.getElementById('porcentagem-valor');
+        const valorReembolsadoDisplay = document.getElementById('valor-reembolsado');
+        const resultadoDisplay = document.getElementById('resultado-reembolso');
+
+        function calcularReembolso() {
+            const valor = parseFloat(valorInput.value) || 0;
+            const pct = parseInt(pctInput.value) || 0;
+            pctValorDisplay.textContent = `${pct}%`;
+            
+            const valorReembolsado = valor * (pct / 100);
+            const custoFinal = Math.max(0, valor - valorReembolsado);
+            
+            valorReembolsadoDisplay.textContent = `R$ ${valorReembolsado.toFixed(2).replace('.', ',')}`;
+            resultadoDisplay.textContent = `R$ ${custoFinal.toFixed(2).replace('.', ',')}`;
+        }
+
+        valorInput.addEventListener('input', calcularReembolso);
+        pctInput.addEventListener('input', calcularReembolso);
+
+        // FAQ
+        document.querySelectorAll('.faq-toggle').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const content = btn.nextElementSibling;
+                const icon = btn.querySelector('[data-lucide="chevron-down"]');
+                content.classList.toggle('hidden');
+                if (icon) icon.classList.toggle('rotate-180');
+            });
+        });
+
+        // TOAST
+        const toast = document.getElementById('toast-agendamento');
+        const toastText = document.getElementById('toast-text');
+        const notificacoes = [
+            "Maria S. acabou de agendar Clínica Geral",
+            "Carlos E. reservou horário em Pediatria",
+            "Fernanda M. agendou Ginecologia",
+            "Lucas R. agendou Check-up Geral"
+        ];
+
+        function mostrarToast() {
+            const randomNotif = notificacoes[Math.floor(Math.random() * notificacoes.length)];
+            toastText.textContent = randomNotif;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 4000);
+        }
+
+        setTimeout(mostrarToast, 4000);
+        setInterval(mostrarToast, 12000);
+    </script>
+</body>
+</html>
