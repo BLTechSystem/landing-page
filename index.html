@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamento Seguro</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 8px; box-sizing: border-box; }
+        .lgpd-box { font-size: 0.85em; margin: 15px 0; }
+        .lgpd-box label { display: flex; align-items: flex-start; gap: 8px; cursor: pointer; }
+        button { padding: 10px 15px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+        button:disabled { background-color: #cccccc; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+    <h2>Agende seu Horário</h2>
+
+    <form id="formAgendamento" onsubmit="realizarAgendamento(event)">
+        <div class="form-group">
+            <label for="nome">Nome Completo:*</label>
+            <input type="text" id="nome" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">E-mail:*</label>
+            <input type="email" id="email" required>
+        </div>
+
+        <div class="form-group">
+            <label for="telefone">Telefone:*</label>
+            <input type="tel" id="telefone" required>
+        </div>
+
+        <div class="form-group">
+            <label for="dataHora">Data e Horário:*</label>
+            <input type="datetime-local" id="dataHora" required>
+        </div>
+
+        <div class="form-group">
+            <label for="observacao">Observações:</label>
+            <textarea id="observacao" rows="3"></textarea>
+        </div>
+
+        <!-- Campo Honeypot Oculto -->
+        <input type="text" id="website_verification_field" style="display:none;" tabindex="-1" autocomplete="off">
+
+        <!-- Checkbox LGPD -->
+        <div class="lgpd-box">
+            <label>
+                <input type="checkbox" id="aceiteTermos" required>
+                <span>
+                    Li e concordo com a <a href="#" onclick="alert('Exiba sua política aqui.'); return false;">Política de Privacidade</a> 
+                    e autorizo o processamento dos meus dados para fins de agendamento.
+                </span>
+            </label>
+        </div>
+
+        <button type="submit" id="btnSubmit">Confirmar Agendamento</button>
+    </form>
+
+    <script>
+        async function realizarAgendamento(event) {
+            event.preventDefault();
+
+            const btnSubmit = document.getElementById('btnSubmit');
+            const honeypot = document.getElementById('website_verification_field').value;
+            const aceiteTermos = document.getElementById('aceiteTermos').checked;
+
+            if (!aceiteTermos) {
+                alert('Você precisa aceitar os termos de privacidade.');
+                return;
+            }
+
+            const dados = {
+                nome: document.getElementById('nome').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                telefone: document.getElementById('telefone').value.trim(),
+                dataHora: document.getElementById('dataHora').value,
+                observacao: document.getElementById('observacao').value.trim(),
+                aceitouTermos: aceiteTermos,
+                honeypot: honeypot
+            };
+
+            btnSubmit.disabled = true;
+            btnSubmit.innerText = 'Enviando...';
+
+            try {
+                const response = await fetch('http://localhost:3000/api/agendar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
+
+                const resultado = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(resultado.message || 'Erro ao agendar.');
+                }
+
+                alert(`Agendamento confirmado!\nNúmero do Protocolo: #${resultado.protocolo}`);
+                document.getElementById('formAgendamento').reset();
+
+            } catch (error) {
+                alert(`Erro: ${error.message}`);
+            } finally {
+                btnSubmit.disabled = false;
+                btnSubmit.innerText = 'Confirmar Agendamento';
+            }
+        }
+    </script>
+</body>
+</html>
